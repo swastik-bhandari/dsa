@@ -9,6 +9,8 @@ OBJS:=node.o list.o main.o
 #	$(CXX) -c list.cpp
 #main.o : main.cpp list.h node.h
 #	$(CXX) -c main.cpp
+#all : final 
+#all: clear // all sets the default target , when you just wirte make , it will execute clear .
 final: $(OBJS)
 	$(CXX) $^ -o final # $^ expands all prerequisites  and $< represents first prerequisite
 clear:
