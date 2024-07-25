@@ -3,13 +3,26 @@ namespace mylist {
 list::list():head(nullptr),tail(nullptr){}
 list::~list(){
 node *temp;
+if(isCircle())
+{
+while(head!=tail)
+{
+temp=head;
+head=head->next;
+tail->next=head;
+delete temp;
+}
+delete head;
+}
+else
+{
 while(head!=nullptr)
 {
 temp=head;
 head=head->next;
 delete temp;
 }
-head=nullptr;
+}
 }
 void list::push_back(int x){
 node* newnode =new node(x);
@@ -162,6 +175,161 @@ temp1=temp1->next;
 }
 return true;
 }
+bool list :: checkPalindrome (void){
+//using slow and fast pointer technique
+node * slow=head;
+node * fast=head;
+while(fast!=nullptr && fast->next!=nullptr)
+{
+slow=slow->next;
+fast=fast->next->next;
+}
+node * prev=nullptr;
+node * current=slow;
+node * after;
+while(current!=nullptr)
+{
+after=current->next;
+current->next=prev;
+prev=current;
+current =after;
+}
+node *temp1=head;
+node *temp2=prev;
+while(temp2!=nullptr){
+if(temp1->data!=temp2->data)
+{
+return false;
+}
+temp1=temp1->next;
+temp2=temp2->next;
+}
+return true;
+}
+bool list::isCircle(void)
+{
+node * fast=head;
+node *slow=head;
+while(fast && fast->next)
+{
+slow=slow->next;
+fast=fast->next->next;
+if(slow==fast)
+{
+return 1;
+}
+}
+return 0;
+}
+void list::makeCircular(void)
+{
+tail->next=head;
+}
+void list::removeCircle(void)
+{
+node *fast=head;
+node *slow=head;
+while(fast && fast->next)
+{
+slow=slow->next;
+fast=fast->next->next;
+if(slow==fast)
+{
+break;
+}
+}
+if(!fast || !fast->next)
+{
+return;
+}
+slow=head;
+if(slow==fast) // if the linkedlist is purely circular , slow=head=fast
+{
+while(fast->next!=slow)
+{
+fast=fast->next;
+}
+fast->next=nullptr;
+}
+else
+{
+node *prev;
+while(slow!=fast)
+{
+prev=fast;
+fast=fast->next;
+slow=slow->next;
+}
+prev->next=nullptr;
+}
+}
+///////////////////////////////////////////////////////// Merge Sort
+void list::sort(void)
+{
+head=mergeSort(head);
+node *temp=head;
+while(temp->next){
+temp=temp->next;
+}
+tail=temp;
+}
+node * list::mergeSort (node * Head)
+{
+if(!Head->next || !Head)
+{
+return Head;
+}
+node * rightHead = splitAtMid(Head);
+node *left=mergeSort(Head);
+node*right=mergeSort(rightHead);
+return (merge(left , right));
+}
+node* list::splitAtMid(node * Head)
+{
+node * slow =Head;
+node * fast=Head;
+node * prev;
+while(fast && fast->next)
+{
+prev=slow;
+slow=slow->next;
+fast=fast->next->next;
+}
+prev->next=nullptr;
+return slow;
+}
+
+node* list :: merge(node * Head , node *rightHead)
+{
+list *newlist = new list();
+node *temp1=Head;
+node *temp2=rightHead;
+while(temp1!=nullptr && temp2!=nullptr)
+{
+if(temp1->data>temp2->data)
+{
+newlist->push_back(temp2->data);
+temp2=temp2->next;
+}
+else
+{
+newlist->push_back(temp1->data);
+temp1=temp1->next;
+}
+}
+while(temp1){
+newlist->push_back(temp1->data);
+temp1=temp1->next;
+}
+while(temp2){
+newlist->push_back(temp2->data);
+temp2=temp2->next;
+}
+delete Head;
+delete rightHead;
+return newlist->head;
+}
+
 } //namespace mylist
 
 

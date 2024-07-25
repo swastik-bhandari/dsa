@@ -23,6 +23,14 @@ void reverse(void);
 void removeNthFromBack(int);
 node * headObj(void);
 bool checkPalindromeRec(void);
+bool checkPalindrome(void);
+bool isCircle(void);
+void makeCircular(void);
+void removeCircle(void);
+void sort(void);
+node * splitAtMid(node*);
+node * merge(node * , node *);
+node * mergeSort(node *);
 };
 }
 #endif // LIST_H
