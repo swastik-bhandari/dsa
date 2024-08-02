@@ -23,7 +23,7 @@ span.push_back(i-prevHigh.top());
 }
 else
 {
-span.push_back(i);
+span.push_back(i+1);
 }
 prevHigh.push(i);
 }
