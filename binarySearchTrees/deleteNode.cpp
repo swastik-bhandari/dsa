@@ -11,6 +11,7 @@ friend node * insert( node * , int ) ;
 friend void inOrder( node * );
 friend node * searchBST( node * , int );
 friend node * deleteNode ( node * , int  ) ;
+friend node * inOrderSuccessor ( node * );
 node() : left(nullptr) , right(nullptr) , data(-1) {}
 node( int data) : data(data) , left(nullptr) , right(nullptr) {}
 };
@@ -37,6 +38,7 @@ root = insert(root , arr[i]);
 }
 return root;
 }
+
 void inOrder( node * root) {
 if( root == nullptr) {
 return;
@@ -44,6 +46,14 @@ return;
 inOrder(root->left);
 cout<<root->data;
 inOrder(root->right);
+}
+
+node * inOrderSuccessor( node * root ) {
+
+while ( root->left!=nullptr) {
+root=root->left;
+}
+return root ;
 }
 
 node * deleteNode ( node * root , int key ) {
@@ -56,12 +66,15 @@ if (!root->left && !root->right) {
 delete root ;
 return nullptr;
 }
-if( root->left || root->right ) {
+if( !root->left || !root->right ) {
 node * temp = (root->left)?(root->left) : (root->right) ;
 delete root ;
 return temp;
 }
-
+node * temp = inOrderSuccessor(root->right);
+root->data=temp->data;
+root->right=deleteNode(root->right , temp->data);
+return root;
 }
 if( key < root->data ) {
 root->left=deleteNode(root->left , key );
@@ -75,7 +88,7 @@ int main ()
 {
 int arr[6]={5,1,3,4,2,7};
 node * root=buildBST(arr ,6);
-int key =4;
-
+node * updateroot = deleteNode(root , 3);
+inOrder(updateroot);
 return 0;
 } 
