@@ -33,6 +33,8 @@ table[i]=nullptr;
 void insert(string key , int value ) ;
 void erase(string key);
 int search(string key);
+void print(void);
+bool exists( string key );
 
 };
 
@@ -95,13 +97,62 @@ temp=temp->next;
 return -1;
 }
 
+void HashTable:: print(void) {
+for(int i=0 ; i<totSize ; i++) {
+node * temp = table[i];
+while(temp!=nullptr) {
+cout<<temp->key<<" "<<temp->value<<endl;
+temp=temp->next;
+}
+}
+}
+
+bool HashTable:: exists(string key ) {
+
+int hashCode = hashFunction(key);
+node * temp = table[hashCode];
+while(temp!=nullptr) {
+if(temp->key == key ) {
+return true;
+}
+temp=temp->next;
+}
+return false;
+}
+
+void HashTable:: erase(string key) {
+if(!exists(key)){
+return;
+}
+int hashCode= hashFunction(key);
+node * temp = table[hashCode];
+node * prev=nullptr;
+if(temp->key==key) {
+table[hashCode]=temp->next;
+temp->next=nullptr;             // it is important to null the next of node that is to be deleted because if next of temp is not null and is pointing 
+delete temp;                   //to its adjecent node , all the nodes after it will be delete due to destructor ~node() {} . 
+return;
+}
+while(temp!=nullptr ) {
+if(temp->key==key) {
+prev->next=temp->next;
+temp->next=nullptr;
+delete temp;
+return;
+}
+prev=temp;
+temp=temp->next;
+}
+}
 
 int main () {
-HashTable ht(3);
+HashTable ht(4);
 ht.insert("india" ,150);
 ht.insert("china" ,150);
-ht.insert("nepal" ,10);
 ht.insert("UK" ,20);
-cout<<ht.search("nepal");
+ht.insert("nepal" ,10);
+ht.insert("US" , 50);
+ht.erase("nepal");
+ht.print();
 return 0;
 }
