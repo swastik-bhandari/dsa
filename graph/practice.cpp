@@ -2,34 +2,55 @@
 #include<list>
 #include<vector>
 using namespace std;
-template<typename T>
-class Triples {
-friend class Graph;
-T num1;
-T num2;
-T weight;
+
+class Graph  {
+list<int> * l ;
+int v;
+void helper(int i , vector<bool>&visited) {
+cout<<i;
+for(auto &it :l[i]) {
+if(!visited[it]) {
+visited[it]=true;
+helper(it  , visited);
+}
+}
+}
 public:
-Triples(int a , int b, int c) :num1(a) , num2(b) , weight(c) {}
+Graph( int v ) : v(v) {
+l = new list<int>[v];
+}
+void addEdge(int a , int b) { // storing neighbours index 
+l[a].push_back(b);
+l[b].push_back(a);
+}
+void print(void) {
+for(int i=0 ;i<v ; i++ ) {
+for(auto it : l[i]) {
+cout<<it<<" ";
+}
+cout<<endl;
+}
+}
+void componentTraversal(void ) {
+vector<bool>visited(v , false);
+for(int i=0 ; i<v ; i++) {
+if(!visited[i]) {
+visited[i]=true;
+helper(i , visited);
+}
+}
+}
 };
-class Graph {
-vector<Triples<int>>v;
-public:
-Graph() { }
-void addEdge(int a , int b , int wt) {
-v.push_back(Triples<int>(a , b, wt));
-}
-void display(void) {
-for(auto &it : v) {
-cout<<it.num1<<" "<<it.num2<<" "<<it.weight<<endl;
-}
-}
-};
+
 int main () {
-Graph g;	
-g.addEdge(0,1,8);
-g.addEdge(1,2,3);
-g.addEdge(2,3,4);
-g.addEdge(3,1,2);
-g.display();
+vector<int>vertices={1,6,4,3,9};
+Graph g(8);
+g.addEdge(0,1);
+g.addEdge(0,3);
+g.addEdge(2,7);
+g.addEdge(2,4);
+g.addEdge(5,7);
+g.addEdge(5,4);
+g.componentTraversal();
 return 0;
 }
