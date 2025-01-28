@@ -11,6 +11,9 @@ public:
 Graph( int v  , bool undirected) : v(v) , undirected(undirected) {
 l = new list<int>[v];
 }
+~Graph() {
+delete[] l;
+}
 void addEdge(int a , int b) { // storing neighbours index 
 l[a].push_back(b);
 if(undirected) {
