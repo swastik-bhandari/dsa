@@ -2,6 +2,8 @@
 #include<list>
 #include<vector>
 #include<queue>
+#include<tuple>
+#include<climits>
 using namespace std;
 
 class customComparator {
@@ -46,14 +48,17 @@ cout<<endl;
 }
 ///////////////////////
 ///////////////////////// MST using prims Algorithm , sum of wts of MST .
-int MST_using_prims(void) {
+vector<tuple<int,int,int>> MST_using_prims(void) {
 if(size<2) {
-return 0;
+throw runtime_error("no edges in connected graph");
 }
 priority_queue< pair<int, int> , vector<pair<int ,int>> , customComparator> pq;
 vector<bool>visited(size, false);
-int sum=0;
+vector<tuple<int,int,int>>mst;
+vector<int>parent(size,-1);
+vector<int>min_wt(size,INT_MAX);
 pq.push(make_pair(0,0));
+min_wt[0]=0;
 ///////////////////
 while(!pq.empty()) {
 int wt = pq.top().first;
@@ -61,14 +66,24 @@ int u = pq.top().second;
 pq.pop();
 if(visited[u]) continue;
 visited[u]=true;
-sum += wt;
 for(auto & e : l[u]) {
-if(!visited[e.second]) {
+int v_wt = e.first;
+int v = e.second;
+if(!visited[v] && v_wt < min_wt[v]) {
+parent[v]=u;
+min_wt[v]=v_wt;
 pq.push(e);
 }
 }
 }
-return sum;
+for(int i=0 ; i<size ; i++) {
+int u= parent[i];
+int v = i;
+int weight = min_wt[i];
+mst.push_back(make_tuple(u, weight , v));
+}
+
+return mst;
 }
 };
 
@@ -79,6 +94,9 @@ g.addEdge(1,40,3);
 g.addEdge(3,50,2);
 g.addEdge(0,30,3);
 g.addEdge(0,15,2);
-cout<<g.MST_using_prims();
+vector<tuple<int,int,int>>mst = g.MST_using_prims();
+ for (auto& edge : mst) {
+        cout << "(u,v)=(" << get<0>(edge) << "," << get<2>(edge) << ") wt:" << get<1>(edge) << endl;
+    }
 return 0;
 }
