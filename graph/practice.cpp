@@ -1,56 +1,72 @@
 #include<iostream>
-#include<list>
 #include<vector>
+#include<list>
+#include<queue>
 using namespace std;
 
-class Graph  {
-list<int> * l ;
-int v;
-void helper(int i , vector<bool>&visited) {
-cout<<i;
-for(auto &it :l[i]) {
-if(!visited[it]) {
-visited[it]=true;
-helper(it  , visited);
-}
-}
-}
+class customComparator {
 public:
-Graph( int v ) : v(v) {
-l = new list<int>[v];
-}
-void addEdge(int a , int b) { // storing neighbours index 
-l[a].push_back(b);
-l[b].push_back(a);
-}
-void print(void) {
-for(int i=0 ;i<v ; i++ ) {
-for(auto it : l[i]) {
-cout<<it<<" ";
-}
-cout<<endl;
-}
-}
-void componentTraversal(void ) {
-vector<bool>visited(v , false);
-for(int i=0 ; i<v ; i++) {
-if(!visited[i]) {
-visited[i]=true;
-helper(i , visited);
-}
-}
+bool operator () (pair<int,int>p1 , pair<int,int>p2 ) {
+return p1 >p2;
 }
 };
 
-int main () {
-vector<int>vertices={1,6,4,3,9};
-Graph g(8);
-g.addEdge(0,1);
-g.addEdge(0,3);
-g.addEdge(2,7);
-g.addEdge(2,4);
-g.addEdge(5,7);
-g.addEdge(5,4);
-g.componentTraversal();
+class Graph {
+int size;
+list<pair<int,int>>*l;
+bool undirected;
+
+public:
+Graph(int size , bool undirected) {
+this->undirected = undirected;
+this->size = size;
+l = new list<pair<int,int>>[size];
+}
+~Graph() {
+delete[] l;
+}
+void addEdge(int u , int wt , int v) {
+l[u].push_back(make_pair(wt,v));
+if(undirected) {
+l[v].push_back(make_pair(wt,u));
+}
+}
+
+
+int primsAlgo(int src) {
+vector<bool>mst(size , false);
+priority_queue<pair<int,int> , vector<pair<int,int>> , customComparator>pq;
+int sum=0;
+pq.push(make_pair(0,src));
+
+while(!pq.empty()) {
+int u= pq.top().second;
+int u_wt= pq.top().first;
+if(!mst[u]) {
+mst[u]=true;
+sum+=u_wt;
+for(auto & neigh : l[u]) {
+int v = neigh.second;
+int v_wt = neigh.first;
+
+if(!mst[v]) {
+pq.push(make_pair(v_wt,v));
+}
+}
+}
+pq.pop();
+}
+return sum;
+}
+};
+int main() {
+Graph g(4, true);
+g.addEdge(0,10,1);
+g.addEdge(1,40,3);
+g.addEdge(3,50,2);
+g.addEdge(0,30,3);
+g.addEdge(0,15,2);
+cout<<g.primsAlgo(0);
 return 0;
 }
+
