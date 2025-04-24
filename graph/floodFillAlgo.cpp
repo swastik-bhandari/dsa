@@ -8,7 +8,7 @@ if(init_val==final_val) {
 return;
 }
 
-if(r<0 || cl <0 || r>=v.size() || cl>=v.size() || init_val != v[r][cl]) {
+if(r<0 || cl <0 || r>=v.size() || cl>=v[0].size() || init_val != v[r][cl]) {
 return;
 }
 v[r][cl]=final_val;
