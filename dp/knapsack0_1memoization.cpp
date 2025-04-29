@@ -4,36 +4,40 @@
 
 using namespace std;
 
-int knapsack(vector<int>&wt , vector<int>&val , int n , int W , vector<vector<int>>&memory) {
+int knapsack(vector<int>& wt, vector<int>& val, int n, int W, vector<vector<int>>& memory) {
+    if(n == 0 || W == 0) {
+        return 0;
+    }
+    if(memory[n][W] != -1) {
+        return memory[n][W];
+    }
 
-if(n==0 || W==0) {
-return 0;
-}
-int ans1=0;
-int ans2=0;
-if(memory[n][W] !=-1) {
-return memory[n][W];
-}
-if(wt[n-1] <=W) { // add that element in the knapsack
- ans1 = knapsack(wt , val , n-1 , W , memory);
- ans2 = val[n-1] + knapsack(wt , val , n-1 , W-wt[n-1] , memory);
-}
-else { // do not add that element in the knapsack
-ans1 = knapsack(wt , val , n-1 , W , memory);
+    int ans1 = knapsack(wt, val, n-1, W, memory);
+    int ans2 = 0;
+    if(wt[n-1] <= W) {
+        ans2 = val[n-1] + knapsack(wt, val, n-1, W-wt[n-1], memory);
+    }
+
+    memory[n][W] = max(ans1, ans2);
+    return memory[n][W];
 }
 
- int max_val = max(ans1 , ans2);
- memory[n][W]= max_val;
- return max_val;
-}
 
 int main () {
-vector<int> wt = {1, 8, 3};
-vector<int> val = {1, 10, 15};
+vector<int> val = {15,14,10,45,30};
+vector<int> wt = {2,5,1,3,4};
 int n = wt.size();
-int W = 3;
+int W = 7;
 int w=0;
 vector<vector<int>>v(n+1 , vector<int>(W+1,-1));
 cout<< knapsack(wt , val , n , W ,v);
+cout<<endl;
+for(auto & it : v) {
+for(auto & k : it) {
+cout<<k<<" ";
+}
+cout<<endl;
+}
+
 return 0;
 }
